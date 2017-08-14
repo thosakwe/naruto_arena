@@ -78,13 +78,21 @@ class Game {
   final Duration _interval;
   Timer _timer;
 
-  Game._(this._arena, this._interval);
+  Game._(this._arena, this._interval) {
+    scheduleMicrotask(_start);
+  }
 
   Stream<GameStatus> get onStatusCheck => _onStatusCheck.stream;
 
   void _close() {
     _onStatusCheck.close();
     _timer?.cancel();
+  }
+
+  void _start() {
+    _timer = new Timer.periodic(_interval, (_) {
+      
+    });
   }
 
   Future surrender() async {
@@ -111,5 +119,5 @@ class GameStatus {
 
   bool get won => _won;
 
-  bool get _lost => lost;
+  bool get lost => _lost;
 }

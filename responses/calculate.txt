@@ -1,0 +1,3 @@
+/newengine.php?type=calculate&load=true
+
+&battlestatus=winner&&completed=true&
