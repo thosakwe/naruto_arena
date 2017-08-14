@@ -1,0 +1,9 @@
+name: naruto_arena
+dependencies:
+  args: ^0.13.4
+  dotenv: ^0.1.3
+  # markov: ^1.0.0
+  string_scanner: ^1.0.0
+  tuple: ^1.0.0
+dependency_overrides:
+  string_scanner: ^1.0.0
