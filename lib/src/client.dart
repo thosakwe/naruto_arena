@@ -1,8 +1,11 @@
 library naruto_arena.src.client;
 
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'package:charcode/charcode.dart';
+import 'package:meta/meta.dart';
 import 'engine_info.dart';
 import 'format.dart';
 part 'battle_status.dart';
@@ -25,6 +28,7 @@ class ArenaClient {
   static String _timestamp() =>
       new DateTime.now().toUtc().millisecondsSinceEpoch.toString();
 
+  /// Logs into Naruto-Arena, and requests a character selection screen.
   static Future<ArenaClient> login(String username, String password,
       {String endpoint}) async {
     endpoint ??= 'http://game.naruto-arena.com';
@@ -40,9 +44,40 @@ class ArenaClient {
     arena
       .._username = username
       .._password = password;
-    arena._engineInfo = await arena.getEngineInfo();
 
+    arena._engineInfo = await arena.getEngineInfo();
     return arena;
+  }
+
+  /// Re-enters a game currently in progress.
+  Future<Game> reEnterCurrentGame(Duration pingInterval) async {
+    var rq = await _client.openUrl(
+      'GET',
+      Uri.parse(
+        '$_endpoint/newengine.php?type=startgame&${_timestamp()}',
+      ),
+    );
+    rq.cookies.addAll(_cookies._cookies);
+    var rs = await rq.close();
+    var body = await rs.transform(UTF8.decoder).join();
+    var data = NarutoArenaFormat.parseAmpersand(body);
+
+    if (data['startmatch'] != '0' && data['startmatch'] != '1') {
+      throw new StateError(
+          'The server denied our request to re-enter a game, with response: $data');
+    } else {
+      Game game;
+      var _onStatusCheck = new StreamController<BattleStatus>(onListen: () {
+        var index = game._playerIndex = int.parse(data['startmatch']);
+
+        while (game._index.isNotEmpty) {
+          game._index.removeFirst().complete(index);
+        }
+
+        game._start();
+      });
+      return game = new Game._(this, pingInterval, _onStatusCheck);
+    }
   }
 
   Future close() {
@@ -67,16 +102,8 @@ class ArenaClient {
       throw new StateError('Failed to log into Naruto Arena.');
 
     var body = await rs.transform(UTF8.decoder).join();
-    var data = NarutoArenaFormat.parseAmpersand(body);
-
-    if (data['login'] != '1')
-      throw new StateError('Invalid login; response: $data');
-
-    var engineInfo = {}..addAll(data);
-    engineInfo['player'] = NarutoArenaFormat.parseMap(data['player']);
-    engineInfo['backgroundsettings'] =
-        NarutoArenaFormat.parseMap(data['backgroundsettings']);
-    return new EngineInfo.fromMap(engineInfo);
+    var data = NarutoArenaFormat.parseAmpersandAll(body);
+    return new EngineInfo.fromMap(data);
   }
 
   Future<GameRequest> requestGame(String type,
@@ -112,6 +139,26 @@ class ArenaClient {
       throw new StateError('Failed to request a new game.');
 
     return new GameRequest._(this, pingInterval);
+  }
+
+  /// Fetches game stats; use this after a game to signal to the server that you are done.
+  Future<String> getGameStats() async {
+    var rq = await _client.openUrl(
+      'GET',
+      Uri.parse(
+        '$_endpoint/newengine.php?type=stats&${_timestamp()}',
+      ),
+    );
+    rq.cookies.addAll(_cookies._cookies);
+    var rs = await rq.close();
+    var body = await rs.transform(UTF8.decoder).join();
+    var data = NarutoArenaFormat.parseAmpersand(body);
+
+    if (data['completed'] != 'true')
+      throw new StateError(
+          'The server denied our request to finish a game; response: $data');
+
+    return data['notes'];
   }
 }
 

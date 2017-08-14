@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="parse_to_json::calculate_e" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application" singleton="true">
-    <option name="arguments" value="responses/calculate_e.txt --plain" />
+    <option name="arguments" value="responses/calculate_e.txt --plain --raw" />
     <option name="filePath" value="$PROJECT_DIR$/bin/parse_to_json.dart" />
     <option name="workingDirectory" value="$PROJECT_DIR$" />
     <method />

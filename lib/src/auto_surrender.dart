@@ -10,9 +10,20 @@ class AutoSurrenderBot extends Bot {
   AutoSurrenderBot(this.turns);
 
   @override
-  Future takeTurn(BattleStatus status, Game game) {
+  Future takeTurn(BattleStatus status, Game game) async {
     print('Taking turn #$_turns...');
-    if (_turns++ >= turns) return game.surrender();
-    return game.turn(Energy.turn(), {});
+
+    if (_turns++ >= turns) {
+      var opponent =
+          await game.getOpponentIndex().timeout(const Duration(seconds: 10));
+      print('Surrendering... Opponent index is $opponent');
+      return await game.surrender();
+    }
+
+    // Do nothing
+    return await game.turn(
+        status.energy
+          ..[Energy.random] = status.energy.values.reduce((a, b) => a + b),
+        {});
   }
 }

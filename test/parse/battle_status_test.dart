@@ -44,7 +44,7 @@ main() {
     expect(bs.energy[Energy.bloodline], 0);
     expect(bs.energy[Energy.ninjutsu], 0);
     expect(bs.energy[Energy.genjutsu], 1);
-    expect(bs.energy[Energy.any], null);
+    expect(bs.energy[Energy.random], null);
 
     expect(bs.targets.keys.toList(), [0, 1, 2]);
 

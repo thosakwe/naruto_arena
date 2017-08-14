@@ -11,14 +11,19 @@ main(List<String> args) async {
     Map out;
 
     if (args.contains('--plain'))
-      out = NarutoArenaFormat.normalizeMap(NARUTO_ARENA.decode(contents));
+      out = NARUTO_ARENA.decode(contents);
     else
-      out = NarutoArenaFormat
-          .normalizeMap(NarutoArenaFormat.parseAmpersandAll(contents));
+      out = NarutoArenaFormat.parseAmpersandAll(contents);
 
-    // Pretty-print JSON
-    var json = const JsonEncoder.withIndent('  ').convert(out);
+    if (args.contains('--raw'))
+      stdout.write(out);
+    else {
+      out = NarutoArenaFormat.normalizeMap(out);
 
-    stdout.write(json);
+      // Pretty-print JSON
+      var json = const JsonEncoder.withIndent('  ').convert(out);
+
+      stdout.write(json);
+    }
   }
 }

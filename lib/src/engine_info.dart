@@ -1,3 +1,7 @@
+abstract class PlayerStatus {
+  static const int inGame = 1, selectionScreen = 0;
+}
+
 class EngineInfo {
   int playerStatus;
   Map<String, dynamic> backgroundSettings;
@@ -12,7 +16,9 @@ class EngineInfo {
 
   factory EngineInfo.fromMap(Map map) => new EngineInfo(
         playerStatus: int.parse(map['playerstatus'].toString()),
-        characterSelection: new CharacterSelection.fromMap(map['player']),
+        characterSelection: map['player'] is Map
+            ? new CharacterSelection.fromMap(map['player'])
+            : null,
         backgroundSettings: map['backgroundsettings'],
         completed: map['completed'] == 'true',
       );

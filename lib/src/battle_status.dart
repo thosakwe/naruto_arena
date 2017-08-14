@@ -5,7 +5,8 @@ class BattleStatus {
       winner = 'winner',
       playerTurn = 'playerTurn',
       opponentTurn = 'opponentTurn',
-      noBattle = 'nobattle';
+      noBattle = 'nobattle',
+      finished = 'finished';
 
   final String battleStatus;
 
@@ -102,17 +103,41 @@ abstract class Energy {
       bloodline = 1,
       ninjutsu = 2,
       genjutsu = 3,
-      any = 4;
+      random = 4;
 
   /// Returns a `Map` suitable for using the given amounts of energy on a single turn.
   static Map<int, int> turn(
       {int taijutsu, int bloodline, int genjutsu, int any}) {
     return {
-      Energy.taijutsu: taijutsu ?? 0,
-      Energy.bloodline: bloodline ?? 0,
-      Energy.ninjutsu: ninjutsu ?? 0,
+      Energy.random: any ?? 0,
       Energy.genjutsu: genjutsu ?? 0,
-      Energy.any: any ?? 0,
+      Energy.ninjutsu: ninjutsu ?? 0,
+      Energy.bloodline: bloodline ?? 0,
+      Energy.taijutsu: taijutsu ?? 0,
     };
   }
+}
+
+abstract class Attack {
+  /// Returns a map representing attack information against the other player.
+  static Map<int, Map<String, int>> turn({
+    @required int opponentPlayerIndex,
+    @required int targetCharacterIndex,
+    @required int skillIndex,
+    @required int type,
+  }) {
+    return {
+      opponentPlayerIndex: {
+        // TODO: Figure out wtf 't' is
+        't': type,
+        'a': null,
+        's': skillIndex,
+        'c': targetCharacterIndex
+      }
+    };
+  }
+}
+
+abstract class AttackType {
+  static const int allEnemies = 10, oneEnemy = 12, useOnSelf = 2;
 }

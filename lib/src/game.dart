@@ -32,8 +32,21 @@ class GameRequest {
 
       if (data['startmatch'] == '2') {
         timer.cancel();
+
+        var battleIdCookie = rs.cookies
+            .firstWhere((c) => c.name == 'battle_id', orElse: () => null);
+
+        if (battleIdCookie == null) {
+          c.completeError(new StateError(
+              'The server did not send a battle_id, and instead sent: $data'));
+        }
+
+        if (!c.isCompleted) c.complete(battleIdCookie.value);
+      } else if (data['startmatch'] != '1') {
+        timer.cancel();
         if (!c.isCompleted)
-          c.complete(rs.cookies.firstWhere((c) => c.name == 'battle_id').value);
+          c.completeError(new StateError(
+              'Server returned invalid response when starting match: $data'));
       }
     });
 
@@ -42,24 +55,58 @@ class GameRequest {
 
   /// Finds a match to play against. You will likely not use this.
   Future<Game> start() async {
-    await findMatch();
+    var battleId = await findMatch();
 
-    var rq = await _arena._client.openUrl(
-      'GET',
-      Uri.parse(
-        '${_arena._endpoint}/newengine.php?type=startgame&${ArenaClient._timestamp()}',
-      ),
-    );
-    rq.cookies.addAll(_arena._cookies._cookies);
-    var rs = await rq.close();
-    var body = await rs.transform(UTF8.decoder).join();
-    var data = NarutoArenaFormat.parseAmpersand(body);
+    int index;
+    StreamController<BattleStatus> _onStatusCheck;
+    Game game;
 
-    if (data['startmatch'] != '0' && data['startmatch'] != '1')
-      throw new StateError(
-          'The server denied our request to start a game, with response: $data');
+    _onStatusCheck = new StreamController<BattleStatus>(onListen: () {
+      // Don't start polling until someone is listening...
+      print('Trying to start match with battle id $battleId...');
+      new Timer.periodic(_interval, (timer) async {
+        try {
+          if (index != null) {
+            timer.cancel();
+            game._playerIndex = index;
 
-    return new Game._(int.parse(data['startmatch']), _arena, _interval);
+            while (game._index.isNotEmpty) {
+              game._index.removeFirst().complete(index);
+            }
+
+            game._start();
+            return;
+          }
+
+          var rq = await _arena._client.openUrl(
+            'GET',
+            Uri.parse(
+              '${_arena._endpoint}/newengine.php?type=startgame&${ArenaClient
+                  ._timestamp()}',
+            ),
+          );
+          rq.cookies.addAll(_arena._cookies._cookies);
+          var rs = await rq.close();
+          var body = await rs.transform(UTF8.decoder).join();
+          var data = NarutoArenaFormat.parseAmpersand(body);
+
+          if (data['startmatch'] != '0' && data['startmatch'] != '1') {
+            timer.cancel();
+
+            while (game._index.isNotEmpty) {
+              game._index.removeFirst().completeError(new StateError(
+                  'The server denied our request to start a game, with response: $data'));
+            }
+          } else {
+            index = int.parse(data['startmatch']);
+          }
+        } catch (e, st) {
+          _onStatusCheck.addError(e, st);
+        }
+      });
+    });
+
+    return game = new Game._(_arena, _interval, _onStatusCheck);
   }
 
   /// Cancels the game request.
@@ -82,34 +129,38 @@ class GameRequest {
 
 /// Represents a Naruto-Arena game.
 class Game {
-  final StreamController<BattleStatus> _onStatusCheck =
-      new StreamController<BattleStatus>();
+  final Queue<Completer<int>> _index = new Queue();
   final ArenaClient _arena;
   final Duration _interval;
+  final StreamController<BattleStatus> _onStatusCheck;
 
-  /// The index corresponding to which player you are (`0` or `1`).
-  final int playerIndex;
-
+  int _playerIndex;
+  bool _pregame = true;
   Timer _timer;
 
-  Game._(this.playerIndex, this._arena, this._interval) {
-    _start();
-  }
+  Game._(this._arena, this._interval, this._onStatusCheck);
 
   /// Fires periodically, when the status of the game is checked.
   Stream<BattleStatus> get onStatusCheck => _onStatusCheck.stream;
 
-  void _close() {
-    _onStatusCheck.close();
+  void _close(String reason) {
+    print('closing: $reason');
     _timer?.cancel();
+    _onStatusCheck.close();
+
+    while (_index.isNotEmpty)
+      _index.removeFirst().completeError(
+          new StateError('Game was closed before player index was resolved.'));
   }
 
-  void _start() {
-    _timer = new Timer.periodic(_interval, (_) async {
+  Future _ping() async {
+    try {
       var rq = await _arena._client.openUrl(
         'GET',
         Uri.parse(
-          '${_arena._endpoint}/newengine.php?type=waiting&load=true&${ArenaClient._timestamp()}',
+          '${_arena
+              ._endpoint}/newengine.php?type=waiting&load=true&${ArenaClient
+              ._timestamp()}',
         ),
       );
       rq.cookies.addAll(_arena._cookies._cookies);
@@ -118,48 +169,80 @@ class Game {
       var data = NarutoArenaFormat.parseAmpersandAll(body);
 
       if (data['completed'] != 'true') {
-        _close();
+        _close('Invalid battle status: $data');
         throw new StateError('Failed to check battle status; response: $data');
       }
 
-      try {
-        var bs = new BattleStatus.fromMap(data);
+      var bs = new BattleStatus.fromMap(data);
+      if (_pregame) _pregame = bs.battleStatus == BattleStatus.noBattle;
+      if (!_pregame) {
         _onStatusCheck.add(bs);
 
         if (bs.battleStatus == BattleStatus.winner ||
             bs.battleStatus == BattleStatus.loser ||
-            bs.battleStatus == BattleStatus.noBattle) _close();
-      } catch (e) {
-        print('Server sent invalid data when polling: $data');
+            bs.battleStatus == BattleStatus.finished ||
+            bs.battleStatus == BattleStatus.noBattle)
+          _close('Game over; status: ${bs.battleStatus}');
       }
-    });
+    } catch (e, st) {
+      _onStatusCheck.addError(e, st);
+    }
   }
 
-  /// Take a turn, spending the designated amounts of energy, and perfoming given attacks.
-  Future<BattleStatus> turn(Map<int, int> energy, Map<int, Map<String, int>> attack) async {
-    var timestamp = ArenaClient._timestamp();
+  void _start() {
+    _ping();
+    _timer = new Timer.periodic(_interval, (_) => _ping());
+  }
 
-    var queryParameters = {
-      'type': 'calculate',
-      'load': 'true',
-      timestamp: timestamp,
+  /// The index corresponding to which player you are (`0` or `1`).
+  Future<int> getPlayerIndex() {
+    if (!_onStatusCheck.hasListener)
+      throw new StateError(
+          'Cannot fetch playerIndex until you listen to onStatusCheck.');
+    if (_playerIndex != null) return new Future<int>.value(_playerIndex);
+    var c = new Completer<int>();
+    _index.addLast(c);
+    return c.future;
+  }
+
+  /// The index of the opponent.
+  Future<int> getOpponentIndex() {
+    return getPlayerIndex().then((i) => i == 0 ? 1 : 0);
+  }
+
+  /// Take a turn, with the given remaining amounts of energy, and perfoming given attacks.
+  Future<BattleStatus> turn(
+      Map<int, int> remainingEnergy, Map<int, Map<String, int>> attack) async {
+    var k = remainingEnergy.keys.toList()..sort((a, b) => b.compareTo(a));
+    var energy = k.fold({}, (out, k) => out..[k] = remainingEnergy[k]);
+
+    var rq = await _arena._client.openUrl(
+      'POST',
+      Uri.parse(
+          '${_arena._endpoint}/newengine.php?type=calculate&load=true&${ArenaClient._timestamp()}'),
+    );
+    rq.headers.contentType = new ContentType('application', 'x-www-form-urlencoded');
+    rq.cookies.addAll(_arena._cookies._cookies);
+
+    var fields = {
       'e': NARUTO_ARENA.encode(energy),
       'q': NARUTO_ARENA.encode(attack)
     };
 
-    var rq = await _arena._client.openUrl(
-      'GET',
-      Uri
-          .parse(_arena._endpoint)
-          .replace(path: 'newengine.php', queryParameters: queryParameters),
-    );
-    rq.cookies.addAll(_arena._cookies._cookies);
+    //print(fields);
+
+    int i = 0;
+    fields.forEach((k, v) {
+      if (i++ > 0) rq.add([$ampersand]);
+      rq.add('$k=${Uri.encodeComponent(v)}'.codeUnits);
+    });
+
     var rs = await rq.close();
     var body = await rs.transform(UTF8.decoder).join();
     var data = NarutoArenaFormat.parseAmpersandAll(body);
 
-    if (data['completed'] != 'true') {
-      _close();
+    if (data['completed'] != 'true' || body.contains('badEnergyTotal')) {
+      _close('Failed to take turn');
       throw new StateError('Failed to take turn; response: $data');
     }
 

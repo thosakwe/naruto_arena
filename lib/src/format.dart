@@ -58,15 +58,14 @@ abstract class NarutoArenaFormat {
     if (value is bool) return 'b:' + (value ? '1' : '0');
 
     if (value is Map) {
-      var buf = new StringBuffer('a:${value.length}{');
+      var buf = new StringBuffer('a:${value.length}:{');
 
       for (int i = 0; i < value.keys.length; i++) {
-        if (i > 0) buf.write(';');
-
         var k = value.keys.elementAt(i);
         buf.write(encode(k));
         buf.write(';');
         buf.write(encode(value[k]));
+        buf.write(';');
       }
 
       buf.write('}');
