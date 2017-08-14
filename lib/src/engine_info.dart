@@ -1,26 +1,24 @@
-import 'format.dart';
-
 class EngineInfo {
   int playerStatus;
   Map<String, dynamic> backgroundSettings;
   bool completed;
-  Player player;
+  CharacterSelection characterSelection;
 
   EngineInfo(
       {this.playerStatus,
-      this.player,
+      this.characterSelection,
       this.backgroundSettings,
       this.completed});
 
   factory EngineInfo.fromMap(Map map) => new EngineInfo(
         playerStatus: int.parse(map['playerstatus'].toString()),
-        player: new Player.fromMap(map['player']),
+        characterSelection: new CharacterSelection.fromMap(map['player']),
         backgroundSettings: map['backgroundsettings'],
         completed: map['completed'] == 'true',
       );
 }
 
-class Player {
+class CharacterSelection {
   String userId;
 
   /// The characters the player currently has selected.
@@ -30,10 +28,11 @@ class Player {
 
   Map<int, Character> characters;
 
-  Player({this.userId, this.selected, this.playerText, this.characters});
+  CharacterSelection(
+      {this.userId, this.selected, this.playerText, this.characters});
 
-  factory Player.fromMap(Map map) {
-    return new Player(
+  factory CharacterSelection.fromMap(Map map) {
+    return new CharacterSelection(
         userId: map['user_id'],
         selected: map['selected'],
         playerText: map['playertext'],
@@ -78,7 +77,15 @@ class Character {
 }
 
 class Skill {
-  int skillId, cooldown;
+  static const String physical = 'Physical',
+      melee = 'Melee',
+      instant = 'Instant',
+      chakra = 'Chakra',
+      mental = 'Mental',
+      unique = 'Unique',
+      ranged = 'Ranged';
+
+  int skillId, cooldown, maxHealth;
   String name, description;
   List<String> classes;
   Map<int, int> energy;
@@ -86,6 +93,7 @@ class Skill {
   Skill(
       {this.skillId,
       this.cooldown,
+      this.maxHealth,
       this.name,
       this.description,
       this.classes,
@@ -95,9 +103,12 @@ class Skill {
     return new Skill(
         name: map['name'],
         skillId: int.parse(map['skill_id']),
-        cooldown: int.parse(map['cooldown']),
+        cooldown:
+            map.containsKey('cooldown') ? int.parse(map['cooldown']) : null,
+        maxHealth:
+            map.containsKey('maxhealth') ? int.parse(map['maxhealth']) : null,
         description: map['description'],
-        classes: map['classlist']?.split(',')?.map((s) => s.trim)?.toList(),
+        classes: map['classlist']?.split(',')?.map((s) => s.trim())?.toList(),
         energy: map['energy']);
   }
 }

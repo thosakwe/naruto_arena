@@ -1,0 +1,445 @@
+{
+  "battlestatus": "playerTurn",
+  "effects": {
+    "0": {
+      "0": {},
+      "1": {},
+      "2": {}
+    },
+    "1": {
+      "0": {},
+      "1": {},
+      "2": {}
+    }
+  },
+  "healths": {
+    "1": {
+      "0": 100,
+      "1": 100,
+      "2": 100
+    },
+    "0": {
+      "0": 100,
+      "1": 100,
+      "2": 100
+    }
+  },
+  "targets": {
+    "0": {
+      "0": {
+        "targets": {
+          "0": "10",
+          "1": "11",
+          "2": "12",
+          "3": "00"
+        },
+        "choice": {
+          "0": "10",
+          "1": "11",
+          "2": "12"
+        }
+      },
+      "1": {
+        "targets": {
+          "0": "10",
+          "1": "11",
+          "2": "12",
+          "3": "00"
+        },
+        "choice": {}
+      },
+      "2": {
+        "targets": {
+          "0": "00"
+        },
+        "choice": {}
+      },
+      "3": {
+        "targets": {
+          "0": "00"
+        },
+        "choice": {}
+      }
+    },
+    "1": {
+      "0": {
+        "targets": {
+          "0": "10",
+          "1": "11",
+          "2": "12",
+          "3": "01"
+        },
+        "choice": {}
+      },
+      "1": {
+        "targets": {
+          "0": "10",
+          "1": "11",
+          "2": "12"
+        },
+        "choice": {
+          "0": "10",
+          "1": "11",
+          "2": "12"
+        }
+      },
+      "2": {
+        "targets": {
+          "0": "00",
+          "1": "02",
+          "2": "01"
+        },
+        "choice": {
+          "0": "00",
+          "1": "02"
+        }
+      },
+      "3": {
+        "targets": {
+          "0": "01"
+        },
+        "choice": {}
+      }
+    },
+    "2": {
+      "0": {
+        "targets": {
+          "0": "10",
+          "1": "11",
+          "2": "12"
+        },
+        "choice": {
+          "0": "10",
+          "1": "11",
+          "2": "12"
+        }
+      },
+      "1": {
+        "targets": {
+          "0": "00",
+          "1": "01"
+        },
+        "choice": {
+          "0": "00",
+          "1": "01"
+        }
+      },
+      "2": {
+        "targets": {
+          "0": "02"
+        },
+        "choice": {}
+      },
+      "3": {
+        "targets": {
+          "0": "02"
+        },
+        "choice": {}
+      }
+    }
+  },
+  "queue": {},
+  "energy": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": "1"
+  },
+  "player": {
+    "1": {
+      "ladderrank": 0,
+      "username": "shinya_yamane",
+      "points": 0,
+      "wins": 0,
+      "losses": 0,
+      "user_id": "5518031",
+      "level": 1,
+      "rank": "Academy Student",
+      "character0": "6",
+      "0": {
+        "character_id": "6",
+        "description": "A Genin from Team 7, Naruto is an orphan with the goal to one day become Hokage. Using his signature move, Shadow Clones, Naruto is able to perform powerful moves such as the Uzumaki Naruto Combo and the Rasengan.",
+        "name": "Uzumaki Naruto",
+        "maxhealth": "100",
+        "0": {
+          "skill_id": "22",
+          "name": "Uzumaki Naruto Combo",
+          "classlist": "Physical, Melee, Instant"
+        },
+        "1": {
+          "skill_id": "23",
+          "name": "Rasengan",
+          "classlist": "Chakra, Melee, Instant"
+        },
+        "2": {
+          "skill_id": "21",
+          "name": "Shadow Clones",
+          "classlist": "Chakra, Instant"
+        },
+        "3": {
+          "skill_id": "24",
+          "name": "Sexy Technique",
+          "classlist": "Chakra, Instant"
+        }
+      },
+      "character1": "23",
+      "1": {
+        "character_id": "23",
+        "description": "A Genin from Team 7, Sakura is very intelligent, but self-conscious about herself. Having just recently received training from Tsunade, Sakura is now able to deliver powerful punches and heal her own allies.",
+        "name": "Haruno Sakura",
+        "maxhealth": "100",
+        "0": {
+          "skill_id": "104",
+          "name": "KO Punch",
+          "classlist": "Physical, Melee, Instant"
+        },
+        "1": {
+          "skill_id": "105",
+          "name": "Mystical Palm Healing",
+          "classlist": "Chakra, Instant"
+        },
+        "2": {
+          "skill_id": "97",
+          "name": "Inner Sakura",
+          "classlist": "Mental, Unique, Instant"
+        },
+        "3": {
+          "skill_id": "106",
+          "name": "Sakura Replacement Technique",
+          "classlist": "Chakra, Instant"
+        }
+      },
+      "character2": "13",
+      "2": {
+        "character_id": "13",
+        "description": "A Genin from Team 7, Sasuke is the lone survivor of the Uchiha clan and has sworn vengeance against his brother. Using his sharingan, Sasuke is able to anticipate incoming attacks and is capable of advanced offensive moves.",
+        "name": "Uchiha Sasuke",
+        "maxhealth": "100",
+        "0": {
+          "skill_id": "58",
+          "name": "Lion Combo",
+          "classlist": "Physical, Melee, Instant"
+        },
+        "1": {
+          "skill_id": "57",
+          "name": "Chidori",
+          "classlist": "Chakra, Melee, Instant"
+        },
+        "2": {
+          "skill_id": "56",
+          "name": "Sharingan",
+          "classlist": "Mental, Unique, Ranged*, Instant"
+        },
+        "3": {
+          "skill_id": "55",
+          "name": "Swift Block",
+          "classlist": "Physical, Instant"
+        }
+      },
+      "ranknumber": 1,
+      "playertext": "ACADEMY STUDENT<BR>CLAN: CLANLESS<BR>LEVEL: 1<BR>LADDERRANK: 0<BR>RATIO: 0 - 0 ({X}0)<BR>"
+    },
+    "0": {
+      "ladderrank": "0",
+      "username": "fgopl",
+      "points": "8171",
+      "wins": "55",
+      "losses": "60",
+      "user_id": "1863272",
+      "level": 18,
+      "rank": "Missing-Nin",
+      "character0": "36",
+      "0": {
+        "character_id": "36",
+        "description": "Naruto's anger and desperation has forced the Kyuubi's chakra to come up to the surface, changing Naruto into a single-minded beast with a nearly endless amount of chakra. With the Kyuubi chakra around Naruto, he is able to unleash powerful waves of raw chakra to endow his power further, or gather it back to guard and heal him.",
+        "name": "Kyuubi Naruto",
+        "maxhealth": "100",
+        "0": {
+          "skill_id": "829",
+          "name": "Kyuubi Rasengan",
+          "description": "Naruto slams his Kyuubi empowered rasengan onto one enemy, dealing 35 damage and stunning them for 1 turn. Naruto will also receive 5 affliction damage.*",
+          "classlist": "Chakra, Melee, Affliction*, Instant",
+          "cooldown": "1",
+          "energy": {
+            "0": 0,
+            "1": 0,
+            "2": 1,
+            "3": 0,
+            "4": 2
+          }
+        },
+        "1": {
+          "skill_id": "830",
+          "name": "Kyuubi Rage",
+          "description": "The Kyuubi's chakra is let loose, dealing 15 damage to all enemies for 3 turns.* During this time, 'Kyuubi Rasengan' will deal an additional 10 damage. 'Kyuubi Chakra' may not be used during this time.",
+          "classlist": "Chakra, Melee, Unique, Instant, Action*",
+          "cooldown": "3",
+          "energy": {
+            "0": 1,
+            "1": 1,
+            "2": 0,
+            "3": 0,
+            "4": 2
+          }
+        },
+        "2": {
+          "skill_id": "831",
+          "name": "Kyuubi Chakra",
+          "description": "Naruto begins using the Kyuubi's chakra, healing himself 15 health for 5 turns.* During this time, Naruto will have 10 points of damage reduction and 'Kyuubi Rasengan' will deal 10 less damage. 'Kyuubi Rage' may not be used during this time.",
+          "classlist": "Chakra, Unique, Instant, Action*",
+          "cooldown": "5",
+          "energy": {
+            "0": 0,
+            "1": 1,
+            "2": 0,
+            "3": 0,
+            "4": 2
+          }
+        },
+        "3": {
+          "skill_id": "166",
+          "name": "Kyuubi Dodge",
+          "description": "This skill makes Kyuubi Naruto invulnerable for 1 turn.",
+          "classlist": "Physical, Instant",
+          "cooldown": "4",
+          "energy": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 1
+          }
+        }
+      },
+      "character1": "58",
+      "1": {
+        "character_id": "58",
+        "description": "The grandmother of Sasori(s) and elder ninja of the Sand Village, Chiyo is a well known and accomplished puppet master and builder.",
+        "name": "Chiyo (S)",
+        "maxhealth": "100",
+        "0": {
+          "skill_id": "249",
+          "name": "White Secret Attack Taijutsu Rampage",
+          "description": "Chiyo (S) directs some of her puppets to wreak havoc upon the battlefield dealing 20 damage to one random enemy for 2 turns.",
+          "classlist": "Physical, Action, Ranged, Unique",
+          "cooldown": "1",
+          "energy": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 1
+          }
+        },
+        "1": {
+          "skill_id": "250",
+          "name": "Sanbou Kyuukai",
+          "description": "This skill does 20 piercing damage to one enemy and that enemy has their physical or ranged skills stunned for 1 turn. This skill ignores invulnerability.",
+          "classlist": "Chakra, Instant, Ranged, Unique",
+          "cooldown": "2",
+          "energy": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 2
+          }
+        },
+        "2": {
+          "skill_id": "251",
+          "name": "Ally Puppetry",
+          "description": "Chiyo (S) controls one ally like a puppet. That ally gains 25{P} damage reduction for 2 turns. During this time their melee skills are improved and deal 5 more damage.",
+          "classlist": "Chakra, Control, Unique",
+          "cooldown": "2",
+          "energy": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 1
+          }
+        },
+        "3": {
+          "skill_id": "252",
+          "name": "Chakra Shield",
+          "description": "This skill makes Chiyo (S) invulnerable for 1 turn.",
+          "classlist": "Chakra, Instant, Unique",
+          "cooldown": "4",
+          "energy": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 1
+          }
+        }
+      },
+      "character2": "57",
+      "2": {
+        "character_id": "57",
+        "description": "With her extensive training under Tsunade for the last two and a half years, Sakura has gained a greater understanding of healing and the human body. While Sakura's physical strength and healing prowess have both increased, her greatest ability is a powerful chakra storing seal taught to her by Tsunade.",
+        "name": "Haruno Sakura (S)",
+        "maxhealth": "100",
+        "0": {
+          "skill_id": "848",
+          "name": "Chakra Enhanced Punch",
+          "description": "Enhancing her attack with finely controlled chakra, Sakura does 25 damage to one enemy. While 'Strength of a Hundred Seal' is active, this skill will deal 35 damage to one enemy, and 10 to all others.",
+          "classlist": "Physical, Melee, Instant",
+          "cooldown": "0",
+          "energy": {
+            "0": 1,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 1
+          }
+        },
+        "1": {
+          "skill_id": "849",
+          "name": "Superior Healing",
+          "description": "With her superior healing skills, Sakura heals half of one ally's missing health, rounded down, and removes all enemy affliction effects from them. While 'Strength of a Hundred Seal' is active, this skill will cost 1 random and have no cooldown.",
+          "classlist": "Chakra, Instant",
+          "cooldown": "1",
+          "energy": {
+            "0": 0,
+            "1": 0,
+            "2": 1,
+            "3": 0,
+            "4": 1
+          }
+        },
+        "2": {
+          "skill_id": "850",
+          "name": "Sakura: Strength of a Hundred Seal",
+          "description": "Sakura gains 3 Seals. During this time, each time Sakura uses a skill other than her invulnerability, she will use up 1 Seal. While 'Strength of a Hundred Seal' is active, Sakura can use this skill again for no cost to restore 25 health and remove all harmful effects on her.",
+          "classlist": "Chakra, Instant",
+          "cooldown": "0",
+          "energy": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 1
+          }
+        },
+        "3": {
+          "skill_id": "247",
+          "name": "Insightful Dodge",
+          "description": "This skill makes Haruno Sakura (S) invulnerable for 1 turn.",
+          "classlist": "Physical, Instant",
+          "cooldown": "4",
+          "energy": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 1
+          }
+        }
+      },
+      "ranknumber": 4,
+      "playertext": "MISSING-NIN<BR>CLAN: THE HUNTER ASSOCIATION<BR>LEVEL: 18<BR>LADDERRANK: 0<BR>RATIO: 55 - 60 ({X}1)<BR>"
+    }
+  },
+  "completed": "true"
+}

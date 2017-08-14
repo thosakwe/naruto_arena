@@ -8,36 +8,17 @@ main(List<String> args) async {
     exitCode = 1;
   } else {
     var contents = await new File(args[0]).readAsString();
-    var ampersand = NarutoArenaFormat.parseAmpersand(contents);
-    var out = ampersand.keys.fold<Map<String, dynamic>>({}, (out, k) {
-      var v = ampersand[k];
+    Map out;
 
-      if (v is! String)
-        return out..[k] = v;
-
-      try {
-        return out..[k] = NarutoArenaFormat.parseMap(v);
-      } catch (_) {
-        return out..[k] = v;
-      }
-    });
-
-    out = _friendlyMap(out);
+    if (args.contains('--plain'))
+      out = NarutoArenaFormat.normalizeMap(NARUTO_ARENA.decode(contents));
+    else
+      out = NarutoArenaFormat
+          .normalizeMap(NarutoArenaFormat.parseAmpersandAll(contents));
 
     // Pretty-print JSON
     var json = const JsonEncoder.withIndent('  ').convert(out);
 
     stdout.write(json);
   }
-}
-
-_friendlyMap(Map map) {
-  return map.keys.fold<Map>({}, (out, k) {
-    var v = map[k];
-    if (v is Map) v = _friendlyMap(v);
-
-    if (k is int)
-      return out..[k.toString()] = v;
-    else return out..[k] = v;
-  });
 }

@@ -7,7 +7,7 @@ main() async {
   var arena = await ArenaClient.login(username, password);
   arena.close();
 
-  var unlocked = arena.engineInfo.player.characters.values.where((c) => c.unlocked);
+  var unlocked = arena.engineInfo.characterSelection.characters.values.where((c) => c.unlocked);
 
   print('Unlocked characters (${unlocked.length}):');
 
